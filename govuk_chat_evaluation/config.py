@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, BooleanOptionalAction
 from inspect import isclass
-from typing import get_origin, get_args, Optional, Type, TypeVar
+from typing import get_origin, get_args, Optional, List, Type, TypeVar
 
 import yaml
 from pydantic import BaseModel
@@ -32,7 +32,10 @@ class BaseConfig(BaseModel):
 
 
 def config_from_cli_args(
-    parser: ArgumentParser, default_config_path: str, config_cls: Type[GenericConfig]
+    parser: ArgumentParser,
+    default_config_path: str,
+    config_cls: Type[GenericConfig],
+    cli_args: Optional[List[str]] = None,
 ) -> GenericConfig:
     parser.add_argument(
         "--config_file",
@@ -41,7 +44,7 @@ def config_from_cli_args(
     )
     config_cls.apply_cli_args(parser)
 
-    args = vars(parser.parse_args())
+    args = vars(parser.parse_args(cli_args))
     filtered_args = {k: v for k, v in args.items() if v is not None}
 
     config_file_path = filtered_args["config_file"]

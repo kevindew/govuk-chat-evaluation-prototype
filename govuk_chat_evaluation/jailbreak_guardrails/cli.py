@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
-from typing import cast, Optional, Literal, Self
+from typing import cast, Optional, Literal, Self, List
 
 from pydantic import Field, model_validator
 
@@ -27,10 +27,10 @@ class Config(BaseConfig):
         return self
 
 
-def main():
+def main(cli_args: Optional[List[str]] = None):
     start_time = datetime.now()
     parser = ArgumentParser(
-        prog="uv run -m govuk_chat_evaluation.jailbreak_guardrails",
+        prog="govuk_chat_evaluation jailbreak_guardrails",
         description=(
             "This will load a JSONL file of jailbreak guardrails, optionally "
             "allow generating responses from GOV.UK Chat, and write the "
@@ -39,6 +39,7 @@ def main():
     )
     config: Config = config_from_cli_args(
         parser,
+        cli_args=cli_args,
         default_config_path="config/defaults/jailbreak_guardrails.yaml",
         config_cls=Config,
     )
